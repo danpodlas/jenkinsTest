@@ -1,0 +1,23 @@
+pipeline {
+    agent any
+
+    stages {
+         stage('Git checkout') {
+            steps {
+              git branch: 'main', url: 'https://github.com/danpodlas/jenkinsTest.git'
+            }
+        }
+
+        stage('Run UI test') {
+            steps {
+                powershell 'mvn clean test'
+            }
+        }
+
+        stage('Public report') {
+            steps {
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'target/surfire-reports', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+            }
+        }
+    }
+}
